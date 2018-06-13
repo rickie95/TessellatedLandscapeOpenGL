@@ -27,39 +27,49 @@ Window::Window(int height, int width, const char* title)
 	}
 }
 
-Window::~Window()
-{
+Window::~Window(){
 	glfwTerminate();
 }
 
-bool Window::isClosed()
-{
+bool Window::isClosed(){
 	return ShouldClose;
 }
 
-bool Window::isOk() {
+bool Window::isOk(){
 	if (this->window == NULL)
 		return false;
-
 	return true;
 }
 
-void Window::Close()
-{
+void Window::Close(){
 	ShouldClose = true;
 }
 
-GLFWwindow * Window::getWindow()
-{
+void Window::setCamera(Camera * cam){
+	this->camera = cam;
+}
+
+GLFWwindow * Window::getWindow(){
 	return window;
 }
 
 void Window::processInput()
 {
 	// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		//glfwSetWindowShouldClose(this->window, true);
+	if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		this->Close();
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		camera->moveY(1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		camera->moveY(-1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		camera->moveZ(-1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		camera->moveZ(1);
 	}
 }
 
