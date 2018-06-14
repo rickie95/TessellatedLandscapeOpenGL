@@ -29,20 +29,22 @@ typedef struct {
 
 int main()
 {
-	int h = 128, ww = 128;
-	double* heighMap = createNoiseMap(h, ww, 7, rand()%10, 0.5);
-	
-	for (int y = 0; y < h; y += 1) {
-		for (int x = 0; x < ww; x += 1) {
-			printf(" %f ", heighMap[x*ww + y]);
-		}
-		printf("\n");
+	int h = 256, ww = 256;
+	double* heighMap = createNoiseMap(h, ww, 1, rand()%10, 0.5);
+
+	if (heighMap != NULL && sizeof(heighMap) == h * ww * sizeof(double)) {
+		std::cout << "HeightMap caricata correttamente" << std::endl;
 	}
+	else {
+		std::cout << "HeightMap: beghe" << std::endl;
+	}
+	
+	
 
 	
 	const int MAX_FPS = 60;
 
-	static Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	static Camera* camera = new Camera(glm::vec3(0.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	Window* window = new Window(800, 600, "A E S T H E T I C  L A N D S C A P E", camera);
 	window->setCamera(camera);
 	if (!window->isOk())
@@ -160,7 +162,7 @@ int main()
 	glEnableVertexAttribArray(1);
 
 	// HEIGHT MAP
-	int Wres = 128, Hres = 128;
+	int Wres = ww, Hres = h;
 	const int numberOfVertex = Wres * Hres;
 	std::vector<float3> verts(numberOfVertex);
 	std::vector<uint3> tris;
@@ -189,8 +191,8 @@ int main()
 
 			verts[i] = v;
 
-			if ((i + 1 % Wres) != 0 && z + 1 < Hres) {
-				uint3 tri = { i, i + Wres, i + Wres + 1 };
+			if (x+1 < Wres && z + 1 < Hres) {
+				uint3 tri = { i, i + Wres, i + Wres +1 };
 				uint3 tri2 = { i, i + Wres + 1, i + 1 };
 
 				tris.push_back(tri);
@@ -242,7 +244,7 @@ int main()
 		// ------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+		/*
 		// be sure to activate the shader before any calls to glUniform
 		LightShader->use();
 		//model = glm::mat4(1.0f);
@@ -253,7 +255,7 @@ int main()
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_LINES, 0, 36);
 		glBindVertexArray(0);
-		
+		*/
 
 		// LightCube
 		shader->use();

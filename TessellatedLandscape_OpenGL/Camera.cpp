@@ -9,7 +9,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 target){
 	projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), (float)(800/600), 0.1f, 100.0f);
 	
-	direction = glm::normalize(position - target);
+	direction = glm::normalize(this->position - this->target);
 	WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	updateLookAt();
 }
