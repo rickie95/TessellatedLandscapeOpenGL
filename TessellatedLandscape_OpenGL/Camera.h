@@ -12,18 +12,24 @@ public:
 	void moveX(int verse);
 	void moveY(int verse);
 	void moveZ(int verse);
+	void updateMouse(double xpos, double ypos);
 	glm::mat4 getLookAt();
+	glm::mat4 getProjection();
+	void updateAspectRatio(unsigned int width, unsigned int height);
 
 private:
-	float cameraSpeed = 0.01;
+	float cameraSpeed = 0.01f, Yaw=-90.0f, Pitch=0.0f;
+	double lastX, lastY;
+	bool firstMouse = true;
 	glm::vec3 position;
 	glm::vec3 target;
 	glm::vec3 direction;
-	glm::vec3 up;
-	glm::vec3 cameraRight;
-	glm::vec3 cameraUp;
-	glm::vec3 cameraFront;
+	glm::vec3 WorldUp;
+	glm::vec3 Right;
+	glm::vec3 Up;
+	glm::vec3 Front;
 	glm::mat4 view;
+	glm::mat4 projection;
 	void updateLookAt();
 };
 

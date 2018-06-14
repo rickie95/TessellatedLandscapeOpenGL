@@ -4,18 +4,25 @@
 #include "Window.h"
 
 //TODO: un bel singleton
+unsigned int lastX = 400;
+unsigned int lastY = 300;
+unsigned int ViewportWidth = 800;
+unsigned int ViewportHeight = 600;
+bool firstMouse = true;
+Camera* camera_off;
 
-Window::Window(int height, int width, const char* title)
+Window::Window(int height, int width, const char* title, Camera* cam)
 {
 	// glfw: initialize and configure
 	// ------------------------------
+	float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+	camera_off = cam;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	window = glfwCreateWindow(height, width, title, NULL, NULL);
 	ShouldClose = false;
-
 	if (window == NULL) // Moooo: If-else ain't  | A E S T H E T I C | 
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -24,6 +31,8 @@ Window::Window(int height, int width, const char* title)
 	else { // Only if there's a window
 		glfwMakeContextCurrent(this->window);
 		glfwSetFramebufferSizeCallback(this->window, this->framebuffer_size_callback);
+		glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPosCallback(this->window, this->mouse_callback);
 	}
 }
 
@@ -46,7 +55,8 @@ void Window::Close(){
 }
 
 void Window::setCamera(Camera * cam){
-	this->camera = cam;
+	camera = cam;
+	camera_off = cam;
 }
 
 GLFWwindow * Window::getWindow(){
@@ -60,16 +70,22 @@ void Window::processInput()
 		this->Close();
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		camera->moveY(1);
+		camera->moveX(1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		camera->moveY(-1);
+		camera->moveX(-1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		camera->moveZ(-1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera->moveZ(1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		camera->moveY(1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+		camera->moveY(-1);
 	}
 }
 
@@ -80,6 +96,20 @@ void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
+	camera_off->updateAspectRatio(width, height);
+}
+
+void MouseMove(double x, double y) {
+	
+	if (camera_off != NULL) {
+		camera_off->updateMouse(x, y);
+	}
+	
+}
+void Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	MouseMove(xpos, ypos);
+	
 }
 
 

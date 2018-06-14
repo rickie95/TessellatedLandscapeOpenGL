@@ -11,6 +11,7 @@ Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath)
 	int success;
 	char infoLog[512];
 	ID = glCreateProgram();
+	std::cout << "SHADER " << ID << " (" << vertexPath << " & " << fragmentPath << ")" << std::endl;
 	glAttachShader(ID, vertex);
 	glAttachShader(ID, fragment);
 	glLinkProgram(ID);
@@ -52,6 +53,10 @@ void Shader::setFloat(const std::string & name, float value) const
 void Shader::setMat4(const std::string & name, glm::mat4 mat) const
 {
 	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+void Shader::setVec3(const std::string & name, glm::vec3 vec) const{
+	glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &vec[0]);
 }
 
 const char* Shader::LoadFromFile(const char* filename)
@@ -103,7 +108,7 @@ unsigned int Shader::compileShader(const char * shaderCode, char type)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::"<< shaderType <<"::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::cout << "ERROR::SHADER::"<< shaderType<<"::COMPILATION_FAILED\n" << infoLog << std::endl;
 	};
 
 	return shader;

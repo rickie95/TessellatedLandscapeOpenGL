@@ -125,13 +125,21 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Perlin.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Perlin.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.glsl" />
+    <None Include="lightFragment.glsl" />
+    <None Include="lightVertex.glsl" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
