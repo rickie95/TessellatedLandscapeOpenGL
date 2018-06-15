@@ -63,8 +63,8 @@ int main()
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
 	// Creating Shaders
-	Shader* shader = new Shader("vertex.glsl", "fragment.glsl");
-	Shader* LightShader = new Shader("lightVertex.glsl", "lightFragment.glsl");
+	Shader* shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl");
+	//Shader* LightShader = new Shader("lightVertex.glsl", "lightFragment.glsl");
 	
 
 	// VERTEX DATA
@@ -165,9 +165,10 @@ int main()
 	int Wres = ww, Hres = h;
 	const int numberOfVertex = Wres * Hres;
 	std::vector<float3> verts(numberOfVertex);
+	std::vector<float3> norms(numberOfVertex);
 	std::vector<uint3> tris;
 
-	const float w = 10.f, l = 10.0f;
+	const float w = 5.0f, l = 5.0f;
 
 	int i = 0;
 	float zOff = 0;
@@ -194,9 +195,10 @@ int main()
 			if (x+1 < Wres && z + 1 < Hres) {
 				uint3 tri = { i, i + Wres, i + Wres +1 };
 				uint3 tri2 = { i, i + Wres + 1, i + 1 };
-
 				tris.push_back(tri);
 				tris.push_back(tri2);
+
+
 			}
 
 			i++;
@@ -230,12 +232,12 @@ int main()
 	//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//model = glm::translate(model, glm::vec3(0.5f, 0.5f, -0.5f));
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_FRONT);
 
-	glm::vec3 lightPosition = glm::vec3(1.2f, 1.0f, 2.0f);
+	glm::vec3 lightPosition = glm::vec3(5.0f, 15.0f, 5.0f);
 	model = glm::mat4(1.0f);
-
+	float x = 0;
 	while (!window->isClosed())
 	{
 		window->processInput();
@@ -261,12 +263,15 @@ int main()
 		shader->use();
 		//model = glm::translate(model, lightPosition);
 		//model = glm::mat4(1.0f);
-		shader->setMat4("projection", camera->getProjection());
-		shader->setMat4("model", model);
-		shader->setMat4("view", camera->getLookAt());
+		x += 0.1;
+		lightPosition = glm::vec3(sin(x)*5, 15.0f, 5.0f);
+		shader->setData("projection", camera->getProjection());
+		shader->setData("model", model);
+		shader->setData("view", camera->getLookAt());
+		shader->setData("lightPos", lightPosition);
 		glBindVertexArray(VAO_LC);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_LC);
-		glDrawElements(GL_LINES, tris.size()*3, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, tris.size()*3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 

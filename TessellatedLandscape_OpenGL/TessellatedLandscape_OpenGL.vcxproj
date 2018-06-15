@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl" />
+    <None Include="geometry.glsl" />
     <None Include="lightFragment.glsl" />
     <None Include="lightVertex.glsl" />
     <None Include="vertex.glsl" />
