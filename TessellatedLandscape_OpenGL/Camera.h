@@ -13,12 +13,13 @@ public:
 	void moveY(int verse);
 	void moveZ(int verse);
 	void updateMouse(double xpos, double ypos);
+	void Velocity(int verse);
 	glm::mat4 getLookAt();
 	glm::mat4 getProjection();
 	void updateAspectRatio(unsigned int width, unsigned int height);
 
 private:
-	float cameraSpeed = 0.01f, Yaw=-90.0f, Pitch=0.0f;
+	float cameraSpeed = 0.01f, Yaw = -90.0f, Pitch = 0.0f;
 	double lastX, lastY;
 	bool firstMouse = true;
 	glm::vec3 position;

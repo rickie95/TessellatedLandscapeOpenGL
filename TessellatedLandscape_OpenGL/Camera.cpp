@@ -71,6 +71,16 @@ void Camera::updateMouse(double xpos, double ypos)
 	this->updateLookAt();
 }
 
+void Camera::Velocity(int verse)
+{
+	float oldSpeed = log(cameraSpeed);
+	this->cameraSpeed = pow(2.71, verse * 0.1 + oldSpeed);
+	if (cameraSpeed < 0.01)
+		cameraSpeed = 0.01;
+
+	std::cout << cameraSpeed << std::endl;
+}
+
 glm::mat4 Camera::getLookAt() {
 	
 	return view;

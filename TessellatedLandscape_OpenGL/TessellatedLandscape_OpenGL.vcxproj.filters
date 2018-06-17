@@ -33,6 +33,9 @@
     <ClCompile Include="Perlin.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -45,6 +48,12 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="Perlin.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomTypes.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,6 +71,15 @@
       <Filter>File di risorse</Filter>
     </None>
     <None Include="geometry.glsl">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="PerlinVertex.glsl">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="vertex_water.glsl">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="fragment_water.glsl">
       <Filter>File di risorse</Filter>
     </None>
   </ItemGroup>

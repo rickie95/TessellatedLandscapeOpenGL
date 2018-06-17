@@ -1,6 +1,8 @@
 
 #include "Perlin.h"
 
+
+
 double Noise(int i, int x, int y) {
 
 	int primes[10][3] = {
@@ -37,7 +39,7 @@ double Interpolate(double a, double b, double x) {  // cosine interpolation
 		f = (1 - cos(ft)) * 0.5;
 	return  a * (1 - f) + b * f;
 }
-
+// x e y non sono coordinate ma multipli della frequenzaValu
 double InterpolatedNoise(int i, double x, double y) {
 	int integer_X = x;
 	double fractional_X = x - integer_X;
@@ -61,27 +63,42 @@ double ValueNoise_2D(double x, double y, int numOctaves, int primeIndex, double 
 		frequency /= 2;
 		amplitude *= persistence;
 
-		primeIndex = 0;
 		total += InterpolatedNoise((primeIndex + i) % 10,
 			x / frequency, y / frequency) * amplitude;
 	}
 	return total / frequency;
 }
 
-double* createNoiseMap(int numX,int numY,int octaves, int primeIndex, double persistance){
-
+heightMap* createNoiseMap(int Wres,int Hres,float w, float h,int octaves, int primeIndex, double persistance){
 	
-	primeIndex = 5;
-	persistance = 0.5;
-	octaves = 7;
+	float Hrange = 7.0, HOffset = 0;
+	heightMap* hm = new heightMap;
+	std::vector<float3>* verts = new std::vector<float3>(Wres * Hres);
+	std::vector<uint3>* ind = new std::vector<uint3>;
+	unsigned int i = 0;
 
-	double* noiseMap = (double*)malloc(sizeof(double) * numX * numY);
+	for (int z = 0; z < Hres; z++) {
+		for (int x = 0; x < Wres; x++) {
+			float3 vertex;
+			vertex.x = x / (float)Wres * w - w / 2;
+			vertex.y = (float)ValueNoise_2D(x, z, octaves, primeIndex, persistance) * Hrange - HOffset;
+			vertex.z = z / (float)Hres * h - h / 2;
 
-	for (int y = 0; y < numY; y++) {
-		for (int x = 0; x < numX; x++) {
-			double noise = ValueNoise_2D(x, y, octaves, primeIndex, persistance);
-			noiseMap[x*numY + y] = noise;
+
+			(*verts)[i] = vertex;
+
+			if (x + 1 < Wres && z + 1 < Hres) {
+				uint3 tri = { i, i + Wres, i + Wres + 1 };
+				uint3 tri2 = { i, i + Wres + 1, i + 1 };
+				ind->push_back(tri);
+				ind->push_back(tri2);
+			}
+			i++;
 		}
 	}
-	return noiseMap;
+	
+	hm->coords = verts;
+	hm->indices = ind;
+
+	return hm;
 }

@@ -21,19 +21,10 @@ Window::Window(int height, int width, const char* title, Camera* cam)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	window = glfwCreateWindow(height, width, title, NULL, NULL);
 	ShouldClose = false;
-	if (window == NULL) // Moooo: If-else ain't  | A E S T H E T I C | 
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-	}
-	else { // Only if there's a window
-		glfwMakeContextCurrent(this->window);
-		glfwSetFramebufferSizeCallback(this->window, this->framebuffer_size_callback);
-		glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPosCallback(this->window, this->mouse_callback);
-	}
+
+	window = glfwCreateWindow(height, width, title, NULL, NULL);
+	setWindow(window);
 }
 
 Window::~Window(){
@@ -63,6 +54,21 @@ GLFWwindow * Window::getWindow(){
 	return window;
 }
 
+void Window::setWindow(GLFWwindow* window) {
+	this->window = window;
+	if (window == NULL) // Moooo: If-else ain't  | A E S T H E T I C | 
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+	}
+	else { // Only if there's a window
+		glfwMakeContextCurrent(this->window);
+		glfwSetFramebufferSizeCallback(this->window, this->framebuffer_size_callback);
+		glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPosCallback(this->window, this->mouse_callback);
+	}
+}
+
 void Window::processInput()
 {
 	// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -86,6 +92,20 @@ void Window::processInput()
 	}
 	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
 		camera->moveY(-1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
+		camera->Velocity(1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS) {
+		camera->Velocity(-1);
+	}
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowSize(this->window, mode->width - 50, mode->height - 50);
+	}
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowSize(this->window, 800, 600);
 	}
 }
 

@@ -91,6 +91,7 @@ void Shader::setData(const std::string & name, glm::vec3 vec) const{
 	glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &vec[0]);
 }
 
+
 const char* Shader::LoadFromFile(const char* filename)
 {
 	std::ifstream in(filename);

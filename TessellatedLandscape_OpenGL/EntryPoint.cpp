@@ -15,33 +15,15 @@
 #include "Window.h"
 #include "Camera.h"
 #include "Perlin.h"
+#include "Object.h"
+#include "CustomTypes.h"
 
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
 
-typedef struct{
-	float x, y, z;
-}float3;
-
-typedef struct {
-	unsigned int x, y, z;
-}uint3;
-
 int main()
 {
-	int h = 256, ww = 256;
-	double* heighMap = createNoiseMap(h, ww, 1, rand()%10, 0.5);
-
-	if (heighMap != NULL && sizeof(heighMap) == h * ww * sizeof(double)) {
-		std::cout << "HeightMap caricata correttamente" << std::endl;
-	}
-	else {
-		std::cout << "HeightMap: beghe" << std::endl;
-	}
-	
-	
-
-	
+		
 	const int MAX_FPS = 60;
 
 	static Camera* camera = new Camera(glm::vec3(0.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -50,246 +32,102 @@ int main()
 	if (!window->isOk())
 		return -1;
 
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
 
-	int nrAttributes;
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
-
 	// Creating Shaders
 	Shader* shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl");
-	//Shader* LightShader = new Shader("lightVertex.glsl", "lightFragment.glsl");
-	
-
-	// VERTEX DATA
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
-	float vertices[] = {
-		-0.2f, -0.2f, -0.2f,  0.0f,  0.0f, -1.0f,
-		0.2f, -0.2f, -0.2f,  0.0f,  0.0f, -1.0f,
-		0.2f,  0.2f, -0.2f,  0.0f,  0.0f, -1.0f,
-		0.2f,  0.2f, -0.2f,  0.0f,  0.0f, -1.0f,
-		-0.2f,  0.2f, -0.2f,  0.0f,  0.0f, -1.0f,
-		-0.2f, -0.2f, -0.2f,  0.0f,  0.0f, -1.0f,
-
-		-0.2f, -0.2f,  0.2f,  0.0f,  0.0f,  1.0f,
-		0.2f, -0.2f,  0.2f,  0.0f,  0.0f,  1.0f,
-		0.2f,  0.2f,  0.2f,  0.0f,  0.0f,  1.0f,
-		0.2f,  0.2f,  0.2f,  0.0f,  0.0f,  1.0f,
-		-0.2f,  0.2f,  0.2f,  0.0f,  0.0f,  1.0f,
-		-0.2f, -0.2f,  0.2f,  0.0f,  0.0f,  1.0f,
-
-		-0.2f,  0.2f,  0.2f, -1.0f,  0.0f,  0.0f,
-		-0.2f,  0.2f, -0.2f, -1.0f,  0.0f,  0.0f,
-		-0.2f, -0.2f, -0.2f, -1.0f,  0.0f,  0.0f,
-		-0.2f, -0.2f, -0.2f, -1.0f,  0.0f,  0.0f,
-		-0.2f, -0.2f,  0.2f, -1.0f,  0.0f,  0.0f,
-		-0.2f,  0.2f,  0.2f, -1.0f,  0.0f,  0.0f,
-
-		0.2f,  0.2f,  0.2f,  1.0f,  0.0f,  0.0f,
-		0.2f,  0.2f, -0.2f,  1.0f,  0.0f,  0.0f,
-		0.2f, -0.2f, -0.2f,  1.0f,  0.0f,  0.0f,
-		0.2f, -0.2f, -0.2f,  1.0f,  0.0f,  0.0f,
-		0.2f, -0.2f,  0.2f,  1.0f,  0.0f,  0.0f,
-		0.2f,  0.2f,  0.2f,  1.0f,  0.0f,  0.0f,
-
-		-0.2f, -0.2f, -0.2f,  0.0f, -1.0f,  0.0f,
-		0.2f, -0.2f, -0.2f,  0.0f, -1.0f,  0.0f,
-		0.2f, -0.2f,  0.2f,  0.0f, -1.0f,  0.0f,
-		0.2f, -0.2f,  0.2f,  0.0f, -1.0f,  0.0f,
-		-0.2f, -0.2f,  0.2f,  0.0f, -1.0f,  0.0f,
-		-0.2f, -0.2f, -0.2f,  0.0f, -1.0f,  0.0f,
-
-		-0.2f,  0.2f, -0.2f,  0.0f,  1.0f,  0.0f,
-		0.2f,  0.2f, -0.2f,  0.0f,  1.0f,  0.0f,
-		0.2f,  0.2f,  0.2f,  0.0f,  1.0f,  0.0f,
-		0.2f,  0.2f,  0.2f,  0.0f,  1.0f,  0.0f,
-		-0.2f,  0.2f,  0.2f,  0.0f,  1.0f,  0.0f,
-		-0.2f,  0.2f, -0.2f,  0.0f,  1.0f,  0.0f
-		
-		
-	};
-
-	float lightCubeVertices[] = {
-		0.1f, 0.1f, 0.1f,	1.0f, 1.0f, 1.0f,//top right
-		0.1f, -0.1, 0.1f,	1.0f, 1.0f, 1.0f,// bottom right
-		-0.1f, -0.1f, 0.1f,	1.0f, 1.0f, 1.0f, // bottom left
-		-0.1f,  0.1f, 0.1f,  1.0f, 1.0f, 1.0f,// top left
-
-		//REAR
-		0.1f, 0.1f, 0.0f,	1.0f, 1.0f, 1.0f,//top right
-		0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,// bottom right
-		-0.1f, -0.1f, 0.0f, 1.0f, 1.0f, 1.0f, // bottom left
-		-0.1f,  0.1f, 0.0f, 1.0f, 1.0f, 1.0f// top left
-	};
-
-	unsigned int lightCubeIndices[] = {
-		0, 1, 3,
-		1, 2, 3,
-		0, 5, 1,
-		0, 4, 5,
-		0, 3, 7,
-		0, 7, 4,
-		6, 4, 7,
-		4, 5, 6,
-		1, 5, 6,
-		1, 2, 6,
-		2, 3, 6,
-		3, 6, 7,
-	};	
-
-
-	// FIRST CUBE AND FLOOR
-	
-	unsigned int VBO, VAO;
-	
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindVertexArray(VAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 
 	// HEIGHT MAP
-	int Wres = ww, Hres = h;
-	const int numberOfVertex = Wres * Hres;
-	std::vector<float3> verts(numberOfVertex);
-	std::vector<float3> norms(numberOfVertex);
-	std::vector<uint3> tris;
 
-	const float w = 5.0f, l = 5.0f;
-
-	int i = 0;
-	float zOff = 0;
-	for (int z = 0; z < Hres; z++) {
-		float xOff = 0;
-		for (int x = 0; x < Wres; x++) {
-			float3 v;
-			v.x = x / (float)Wres;
-			v.y = 0;
-			v.z = z / (float)Hres;
-
-			//scale
-			v.x *= w;
-			v.z *= l;
-
-			//move
-			v.x -= w / 2;
-			v.z -= l / 2;
-
-			v.y = heighMap[x*Hres + z]*10;
-
-			verts[i] = v;
-
-			if (x+1 < Wres && z + 1 < Hres) {
-				uint3 tri = { i, i + Wres, i + Wres +1 };
-				uint3 tri2 = { i, i + Wres + 1, i + 1 };
-				tris.push_back(tri);
-				tris.push_back(tri2);
-
-
-			}
-
-			i++;
-			xOff += 0.1;
-		}
-		zOff += 0.1;
-	}
-	int TerrainCount = tris.size();
-
-	// LIGHT CUBE
-	unsigned int VBO_LC, VAO_LC, EBO_LC;
-	glGenVertexArrays(1, &VAO_LC);
-	glGenBuffers(1, &VBO_LC);
-	glGenBuffers(1, &EBO_LC);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	int h = 512, ww = 512;
+	heightMap* hm = createNoiseMap(h, ww, 40.0, 40.0, 7, rand() % 10, 0.52);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_LC);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float3)*verts.size(), verts.data(), GL_STATIC_DRAW);
-	glBindVertexArray(VAO_LC);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	Object* terrain = new Object(hm->coords);
+	terrain->setIndices(hm->indices);
+	terrain->setShader(shader);
+	terrain->setDrawMode(GL_TRIANGLES);
 
-	// now EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_LC);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint3)*tris.size(), tris.data(), GL_STATIC_DRAW);
-	std::cout << sizeof(uint3)/3 << std::endl;
-	std::cout << sizeof(GL_UNSIGNED_INT) << std::endl;
+	// WATER
+	int i = 0;
+	std::vector<float3>* wat_verts = new std::vector<float3>(4);
+	float3 f = { 20*1.0, 0.0, 20*1.0 };
+	(*wat_verts)[i++] = f;
+	f = { 20*-1.0, 0.0, 20*1.0 };
+	(*wat_verts)[i++] = f;
+	f = { 20 * 1.0, 0.0, 20 * -1.0 };
+	(*wat_verts)[i++] = f;
+	f = { 20 * -1.0, 0.0, 20 * -1.0 };
+	(*wat_verts)[i++] = f;
+	
+	i = 0;
+	std::vector<uint3>* wat_ind = new std::vector<uint3>(2);
+	uint3 ind = { 0, 2, 1};
+	(*wat_ind)[i++] = ind;
+	ind = { 1, 2, 3 };
+	(*wat_ind)[i++] = ind;
+
+
+	Shader* water_shader = new Shader("vertex_water.glsl", "fragment_water.glsl");
+
+	Object* water = new Object(wat_verts);
+	water->setShader(water_shader);
+	water->setIndices(wat_ind);
+	water->setDrawMode(GL_TRIANGLES);
+
 	int waitFor = 1 / ((float)MAX_FPS)*1000;
-
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//model = glm::translate(model, glm::vec3(0.5f, 0.5f, -0.5f));
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_FRONT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	glm::vec3 lightPosition = glm::vec3(5.0f, 15.0f, 5.0f);
 	model = glm::mat4(1.0f);
 	float x = 0;
+	
+	Shader* s = NULL;
 	while (!window->isClosed())
 	{
+		
 		window->processInput();
 
-		// render
-		// ------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		/*
-		// be sure to activate the shader before any calls to glUniform
-		LightShader->use();
-		//model = glm::mat4(1.0f);
-		LightShader->setMat4("projection", camera->getProjection());
-		LightShader->setMat4("model", model);
-		LightShader->setMat4("view", camera->getLookAt());
-		LightShader->setVec3("lightPos", lightPosition);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_LINES, 0, 36);
-		glBindVertexArray(0);
-		*/
 
-		// LightCube
-		shader->use();
-		//model = glm::translate(model, lightPosition);
-		//model = glm::mat4(1.0f);
-		x += 0.1;
-		lightPosition = glm::vec3(sin(x)*5, 15.0f, 5.0f);
-		shader->setData("projection", camera->getProjection());
-		shader->setData("model", model);
-		shader->setData("view", camera->getLookAt());
-		shader->setData("lightPos", lightPosition);
-		glBindVertexArray(VAO_LC);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_LC);
-		glDrawElements(GL_TRIANGLES, tris.size()*3, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		lightPosition = glm::vec3(5.0f, 5.0f, 5.0f);
 
+		// TERRAIN 
+		s = terrain->useShader();
+		s->setData("model", model);
+		s->setData("projection", camera->getProjection());
+		s->setData("view", camera->getLookAt());
+		s->setData("lightPos", lightPosition);
+		terrain->drawObject();
 
+		//WATER
+		s = water->useShader();
+		s->setData("model", model);
+		s->setData("projection", camera->getProjection());
+		s->setData("view", camera->getLookAt());
+		water->drawObject();
+		
 		glfwSwapBuffers(window->getWindow());
 		glfwPollEvents();
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(waitFor));
 		
-		//window->Close();
 	}
 
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(1, &VAO_LC);
-	glDeleteBuffers(1, &VBO_LC);
+	terrain->~Object();
+	water->~Object();
 
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
 	window->~Window();
 
 	//system("PAUSE");
