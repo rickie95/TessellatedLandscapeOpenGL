@@ -19,8 +19,8 @@ public:
 	void updateAspectRatio(unsigned int width, unsigned int height);
 
 private:
-	float cameraSpeed = 0.01f, Yaw = -90.0f, Pitch = 0.0f;
-	double lastX, lastY;
+	float Yaw = -90.0f, Pitch = 0.0f;
+	double cameraSpeed = 0.5f, lastX, lastY;
 	bool firstMouse = true;
 	glm::vec3 position;
 	glm::vec3 target;

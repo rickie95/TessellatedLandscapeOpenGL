@@ -7,7 +7,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 target){
 	lastX = 400;
 	lastY = 300;
 	projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), (float)(800/600), 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)(800/600), 0.1f, 1000.0f);
 	
 	direction = glm::normalize(this->position - this->target);
 	WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -28,17 +28,17 @@ void Camera::setTarget(glm::vec3 target){
 }
 
 void Camera::moveX(int verse){
-	glm::vec3 pos = this->position + verse*cameraSpeed * Front;
+	glm::vec3 pos = this->position + verse*(float)cameraSpeed * Front;
 	this->setPosition(pos);
 }
 
 void Camera::moveY(int verse){
-	glm::vec3 pos = this->position + verse * cameraSpeed * Up;
+	glm::vec3 pos = this->position + verse * (float)cameraSpeed * Up;
 	this->setPosition(pos);
 }
 
 void Camera::moveZ(int verse){
-	glm::vec3 pos = this->position + glm::normalize(glm::cross(Front, Up)) * (cameraSpeed * verse);
+	glm::vec3 pos = this->position + glm::normalize(glm::cross(Front, Up)) * ((float)cameraSpeed * verse);
 	this->setPosition(pos);
 }
 
@@ -51,8 +51,8 @@ void Camera::updateMouse(double xpos, double ypos)
 		firstMouse = false;
 	}
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
+	float xoffset = (float)(xpos - lastX);
+	float yoffset = (float)(lastY - ypos);
 	lastX = xpos;
 	lastY = ypos;
 
@@ -73,7 +73,7 @@ void Camera::updateMouse(double xpos, double ypos)
 
 void Camera::Velocity(int verse)
 {
-	float oldSpeed = log(cameraSpeed);
+	double oldSpeed = log(cameraSpeed);
 	this->cameraSpeed = pow(2.71, verse * 0.1 + oldSpeed);
 	if (cameraSpeed < 0.01)
 		cameraSpeed = 0.01;

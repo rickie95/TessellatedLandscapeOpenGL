@@ -1,7 +1,4 @@
-
-#include "Perlin.h"
-
-
+#include "PerlinNoise.h"
 
 double Noise(int i, int x, int y) {
 
@@ -41,9 +38,9 @@ double Interpolate(double a, double b, double x) {  // cosine interpolation
 }
 // x e y non sono coordinate ma multipli della frequenzaValu
 double InterpolatedNoise(int i, double x, double y) {
-	int integer_X = x;
+	int integer_X = (int)x;
 	double fractional_X = x - integer_X;
-	int integer_Y = y;
+	int integer_Y = (int)y;
 	double fractional_Y = y - integer_Y;
 
 	double v1 = SmoothedNoise(i, integer_X, integer_Y),
@@ -54,6 +51,7 @@ double InterpolatedNoise(int i, double x, double y) {
 		i2 = Interpolate(v3, v4, fractional_X);
 	return Interpolate(i1, i2, fractional_Y);
 }
+
 
 double ValueNoise_2D(double x, double y, int numOctaves, int primeIndex, double persistence) {
 	double total = 0,
@@ -67,38 +65,4 @@ double ValueNoise_2D(double x, double y, int numOctaves, int primeIndex, double 
 			x / frequency, y / frequency) * amplitude;
 	}
 	return total / frequency;
-}
-
-heightMap* createNoiseMap(int Wres,int Hres,float w, float h,int octaves, int primeIndex, double persistance){
-	
-	float Hrange = 7.0, HOffset = 0;
-	heightMap* hm = new heightMap;
-	std::vector<float3>* verts = new std::vector<float3>(Wres * Hres);
-	std::vector<uint3>* ind = new std::vector<uint3>;
-	unsigned int i = 0;
-
-	for (int z = 0; z < Hres; z++) {
-		for (int x = 0; x < Wres; x++) {
-			float3 vertex;
-			vertex.x = x / (float)Wres * w - w / 2;
-			vertex.y = (float)ValueNoise_2D(x, z, octaves, primeIndex, persistance) * Hrange - HOffset;
-			vertex.z = z / (float)Hres * h - h / 2;
-
-
-			(*verts)[i] = vertex;
-
-			if (x + 1 < Wres && z + 1 < Hres) {
-				uint3 tri = { i, i + Wres, i + Wres + 1 };
-				uint3 tri2 = { i, i + Wres + 1, i + 1 };
-				ind->push_back(tri);
-				ind->push_back(tri2);
-			}
-			i++;
-		}
-	}
-	
-	hm->coords = verts;
-	hm->indices = ind;
-
-	return hm;
 }

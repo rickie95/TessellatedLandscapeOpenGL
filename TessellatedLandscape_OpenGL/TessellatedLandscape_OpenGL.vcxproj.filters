@@ -30,10 +30,16 @@
     <ClCompile Include="EntryPoint.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Perlin.cpp">
+    <ClCompile Include="Object.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
+    <ClCompile Include="NoiseThread.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="PerlinNoise.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,13 +53,19 @@
     <ClInclude Include="Camera.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="Perlin.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="CustomTypes.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseThread.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="PerlinNoise.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

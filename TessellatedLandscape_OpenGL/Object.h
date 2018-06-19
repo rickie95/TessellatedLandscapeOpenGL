@@ -7,6 +7,7 @@
 class Object
 {
 private:
+	float* data_f;
 	std::vector<float3>* data;
 	std::vector<uint3>* indices;
 	GLenum drawMode;
@@ -17,6 +18,7 @@ private:
 
 public:
 	Object(std::vector<float3>* vertices);
+	Object(float* vertices, int size);
 	~Object();
 	void setIndices(std::vector<uint3>* ind);
 	void setShader(Shader* shad);

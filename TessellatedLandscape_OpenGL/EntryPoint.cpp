@@ -14,7 +14,7 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Camera.h"
-#include "Perlin.h"
+#include "HeightMap.h"
 #include "Object.h"
 #include "CustomTypes.h"
 
@@ -23,12 +23,14 @@ const int SCR_HEIGHT = 600;
 
 int main()
 {
-		
-	const int MAX_FPS = 60;
+	const int MAX_FPS = 60,
+			  HEIGHT_SCENE = 200, 
+			  WIDTH_SCENE = 200;
 
 	static Camera* camera = new Camera(glm::vec3(0.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	Window* window = new Window(800, 600, "A E S T H E T I C  L A N D S C A P E", camera);
 	window->setCamera(camera);
+
 	if (!window->isOk())
 		return -1;
 
@@ -39,28 +41,30 @@ int main()
 	}
 
 	// Creating Shaders
-	Shader* shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl");
+	Shader* terrain_shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl");
+	Shader* water_shader = new Shader("vertex_water.glsl", "fragment_water.glsl");
 
-	// HEIGHT MAP
+	// HEIGHT MAP & TERRAIN
+	int h = 1024, ww = 1024; // Resolution
+	float HeightRange = 60;
 
-	int h = 512, ww = 512;
-	heightMap* hm = createNoiseMap(h, ww, 40.0, 40.0, 7, rand() % 10, 0.52);
+	srand(time(NULL));
+	heightMap* hm = createNoiseMap(h, ww, HeightRange,HEIGHT_SCENE*2, WIDTH_SCENE*2, 7, rand() % 10, 0.50);
 	
-	Object* terrain = new Object(hm->coords);
+	Object* terrain = new Object(hm->coords, 3*h*ww);
 	terrain->setIndices(hm->indices);
-	terrain->setShader(shader);
-	terrain->setDrawMode(GL_TRIANGLES);
+	terrain->setShader(terrain_shader);
 
 	// WATER
 	int i = 0;
 	std::vector<float3>* wat_verts = new std::vector<float3>(4);
-	float3 f = { 20*1.0, 0.0, 20*1.0 };
+	float3 f = { HEIGHT_SCENE*1.0, 0.0, WIDTH_SCENE*1.0 };
 	(*wat_verts)[i++] = f;
-	f = { 20*-1.0, 0.0, 20*1.0 };
+	f = { HEIGHT_SCENE * -1.0, 0.0, WIDTH_SCENE * 1.0 };
 	(*wat_verts)[i++] = f;
-	f = { 20 * 1.0, 0.0, 20 * -1.0 };
+	f = { HEIGHT_SCENE * 1.0, 0.0, WIDTH_SCENE * -1.0 };
 	(*wat_verts)[i++] = f;
-	f = { 20 * -1.0, 0.0, 20 * -1.0 };
+	f = { HEIGHT_SCENE * -1.0, 0.0, WIDTH_SCENE * -1.0 };
 	(*wat_verts)[i++] = f;
 	
 	i = 0;
@@ -70,18 +74,16 @@ int main()
 	ind = { 1, 2, 3 };
 	(*wat_ind)[i++] = ind;
 
-
-	Shader* water_shader = new Shader("vertex_water.glsl", "fragment_water.glsl");
-
 	Object* water = new Object(wat_verts);
 	water->setShader(water_shader);
 	water->setIndices(wat_ind);
-	water->setDrawMode(GL_TRIANGLES);
-
-	int waitFor = 1 / ((float)MAX_FPS)*1000;
+	
+	int waitFor = (int)(1 / ((float)MAX_FPS)*1000);
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	//model = glm::translate(model, glm::vec3(0.5f, 0.5f, -0.5f));
+
+	// DEPTH TEST + ALPHA BLENDING + CULLING
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -92,10 +94,9 @@ int main()
 	model = glm::mat4(1.0f);
 	float x = 0;
 	
-	Shader* s = NULL;
+	Shader* s = NULL; // Jolly
 	while (!window->isClosed())
 	{
-		
 		window->processInput();
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -121,8 +122,8 @@ int main()
 		glfwSwapBuffers(window->getWindow());
 		glfwPollEvents();
 
+		// LIMIT FPS (da rivedere)
 		std::this_thread::sleep_for(std::chrono::milliseconds(waitFor));
-		
 	}
 
 	terrain->~Object();
@@ -133,4 +134,3 @@ int main()
 	//system("PAUSE");
 	return 0;
 }
-

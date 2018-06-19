@@ -12,6 +12,7 @@ out VS_OUT{
 void main()
 {
     // note that we read the multiplication from right to left
-	vs_out.fragPos = vec3(model*vec4(aPos,1.0));
+	//vs_out.fragPos = vec3(model*vec4(aPos,1.0));
+	vs_out.fragPos = aPos;
     gl_Position = model*vec4(aPos,1.0);
 }
