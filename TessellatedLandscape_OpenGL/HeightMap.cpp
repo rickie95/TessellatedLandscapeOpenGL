@@ -2,7 +2,7 @@
 #include "HeightMap.h"
 
 
-heightMap* createNoiseMap(int Wres,int Hres, float Hrange, float w, float h,int octaves, int primeIndex, double persistance){
+heightMap* NoiseMap(int Wres,int Hres, float Hrange, float w, float h,int octaves, int primeIndex, double persistance){
 	
 	heightMap* hm = new heightMap;
 	std::vector<uint3>* ind = new std::vector<uint3>;

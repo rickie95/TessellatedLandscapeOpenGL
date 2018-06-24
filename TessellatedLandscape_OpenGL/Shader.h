@@ -17,6 +17,7 @@ public:
 
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* geometryPath);
+	Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLchar * geometryPath, const GLchar* evaluationPath, const GLchar* controlPath);
 	void use();
 	void setData(const std::string &name, bool value) const;
 	void setData(const std::string &name, int value) const;

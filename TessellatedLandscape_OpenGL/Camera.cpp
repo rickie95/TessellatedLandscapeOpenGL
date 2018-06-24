@@ -22,6 +22,11 @@ void Camera::setPosition(glm::vec3 position){
 	updateLookAt();
 }
 
+glm::vec3 Camera::getPosition()
+{
+	return this->position;
+}
+
 void Camera::setTarget(glm::vec3 target){
 	this->target = target;
 	updateLookAt();

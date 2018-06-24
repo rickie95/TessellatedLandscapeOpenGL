@@ -8,6 +8,7 @@ public:
 	Camera(glm::vec3 position, glm::vec3 target);
 	~Camera();
 	void setPosition(glm::vec3 position);
+	glm::vec3 getPosition();
 	void setTarget(glm::vec3 target);
 	void moveX(int verse);
 	void moveY(int verse);

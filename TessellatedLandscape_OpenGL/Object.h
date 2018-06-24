@@ -10,11 +10,16 @@ private:
 	float* data_f;
 	std::vector<float3>* data;
 	std::vector<uint3>* indices;
-	GLenum drawMode;
-	Shader* shader;
+	
+protected:
 	unsigned int VAO = -1,
 		VBO = -1,
 		EBO = -1;
+	GLenum drawMode;
+	Shader* shader;
+	void loadData(float* data, int size);
+	void loadData(std::vector<float3>* data);
+	Object();
 
 public:
 	Object(std::vector<float3>* vertices);

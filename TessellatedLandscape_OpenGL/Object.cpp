@@ -2,9 +2,24 @@
 
 
 
-Object::Object(std::vector<float3>* vertices)
+void Object::loadData(float * Verts, int size)
 {
-	data = vertices;
+	data_f = Verts;
+	drawMode = GL_TRIANGLES;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	std::cout << sizeof(float) *size << std::endl;
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, data_f, GL_STATIC_DRAW);
+	glBindVertexArray(VAO);
+	// location, attribute size, type, normalize, stride, offset
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+}
+
+void Object::loadData(std::vector<float3>* Verts)
+{
+	this->data = Verts;
 	drawMode = GL_TRIANGLES;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -16,19 +31,18 @@ Object::Object(std::vector<float3>* vertices)
 	glEnableVertexAttribArray(0);
 }
 
+Object::Object()
+{
+}
+
+Object::Object(std::vector<float3>* vertices)
+{
+	loadData(vertices);
+}
+
 Object::Object(float* vertices, int size)
 {
-	data_f = vertices;
-	drawMode = GL_TRIANGLES;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	std::cout << sizeof(float) *size << std::endl;
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, vertices, GL_STATIC_DRAW);
-	glBindVertexArray(VAO);
-	// location, attribute size, type, normalize, stride, offset
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	loadData(vertices, size);
 }
 
 

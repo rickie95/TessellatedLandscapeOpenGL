@@ -60,6 +60,47 @@ Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLc
 	glDeleteShader(geometry);
 }
 
+Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLchar * geometryPath, const GLchar* evaluationPath, const GLchar* controlPath)
+{
+	const char* VertexCode = LoadFromFile(vertexPath);
+	const char* FragmentCode = LoadFromFile(fragmentPath);
+	const char* GeometryCode = LoadFromFile(geometryPath);
+	const char* EvaluationCode = LoadFromFile(evaluationPath);
+	const char* ControlCode = LoadFromFile(controlPath);
+
+
+	unsigned int vertex = compileShader(VertexCode, 'v');
+	unsigned int fragment = compileShader(FragmentCode, 'f');
+	unsigned int geometry = compileShader(GeometryCode, 'g');
+	unsigned int evaluation = compileShader(EvaluationCode, 'e');
+	unsigned int control = compileShader(ControlCode, 'c');
+
+	int success;
+	char infoLog[512];
+	ID = glCreateProgram();
+	std::cout << "SHADER " << ID << " (" << vertexPath << " & " << fragmentPath << ")" << std::endl;
+	glAttachShader(ID, vertex);
+	glAttachShader(ID, fragment);
+	glAttachShader(ID, geometry);
+	glAttachShader(ID, evaluation);
+	glAttachShader(ID, control);
+	glLinkProgram(ID);
+	// print linking errors if any
+	glGetProgramiv(ID, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(ID, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+	}
+
+	// delete the shaders as they're linked into our program now and no longer necessery
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+	glDeleteShader(geometry);
+	glDeleteShader(evaluation);
+	glDeleteShader(control);
+}
+
 void Shader::use()
 {
 	glUseProgram(ID);
@@ -132,7 +173,15 @@ unsigned int Shader::compileShader(const char * shaderCode, char type)
 	}
 	else if (type == 'g') {
 		shader = glCreateShader(GL_GEOMETRY_SHADER);
-		shaderType = "FRAGMENT";
+		shaderType = "GEOMETRY";
+	}
+	else if (type == 'c') {
+		shader = glCreateShader(GL_TESS_CONTROL_SHADER);
+		shaderType = "CONTROL";
+	}
+	else if (type == 'e') {
+		shader = glCreateShader(GL_TESS_EVALUATION_SHADER);
+		shaderType = "EVALUATION";
 	}
 	else {
 		shaderType = "UNKNOW";

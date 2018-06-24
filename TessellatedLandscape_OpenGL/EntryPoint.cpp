@@ -14,9 +14,11 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Camera.h"
-#include "HeightMap.h"
+//#include "HeightMap.h"
+#include "HeightMapFile.h"
 #include "Object.h"
 #include "CustomTypes.h"
+#include "SkyBox.h"
 
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
@@ -26,7 +28,7 @@ int main()
 	const int MAX_FPS = 60,
 			  HEIGHT_SCENE = 200, 
 			  WIDTH_SCENE = 200;
-
+	
 	static Camera* camera = new Camera(glm::vec3(0.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	Window* window = new Window(800, 600, "A E S T H E T I C  L A N D S C A P E", camera);
 	window->setCamera(camera);
@@ -41,18 +43,29 @@ int main()
 	}
 
 	// Creating Shaders
-	Shader* terrain_shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl");
+	//Shader* terrain_shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl");
+	Shader* terrain_shader = new Shader("vertex.glsl", "fragment.glsl", "geometry.glsl", "tessEvaluationShader.glsl", "tessControlShader.glsl");
 	Shader* water_shader = new Shader("vertex_water.glsl", "fragment_water.glsl");
+	Shader* skybox_shader = new Shader("SkyBoxVert.glsl", "SkyBoxFrag.glsl");
+
+	//SKYBOX
+	SkyBox* skybox = new SkyBox();
+	skybox->setShader(skybox_shader);
 
 	// HEIGHT MAP & TERRAIN
-	int h = 1024, ww = 1024; // Resolution
+	int h = 2048, ww = 1024; // Resolution
 	float HeightRange = 60;
 
 	srand(time(NULL));
-	heightMap* hm = createNoiseMap(h, ww, HeightRange,HEIGHT_SCENE*2, WIDTH_SCENE*2, 7, rand() % 10, 0.50);
+	heightMap* hm = NoiseMap(h, HeightRange, 6, rand() % 10, 0.5);
+	createMap(hm->coords, "D:\heightMap.bmp", h);
+
+
+
+	//heightMap* hm = createNoiseMap(h, ww, HeightRange,HEIGHT_SCENE*2, WIDTH_SCENE*2, 7, rand() % 10, 0.50);
 	
-	Object* terrain = new Object(hm->coords, 3*h*ww);
-	terrain->setIndices(hm->indices);
+	Object* terrain = new Object((float*)hm->coords, 3*h*ww);
+	//terrain->setIndices(hm->indices);
 	terrain->setShader(terrain_shader);
 
 	// WATER
@@ -110,6 +123,8 @@ int main()
 		s->setData("projection", camera->getProjection());
 		s->setData("view", camera->getLookAt());
 		s->setData("lightPos", lightPosition);
+		s->setData("gEyeWorldPos", camera->getPosition());
+		s->setData("gDispFactor", 4.5f);
 		terrain->drawObject();
 
 		//WATER
@@ -118,6 +133,9 @@ int main()
 		s->setData("projection", camera->getProjection());
 		s->setData("view", camera->getLookAt());
 		water->drawObject();
+
+		//SKYBOX
+		//skybox->drawObject(camera->getLookAt(), camera->getProjection());
 		
 		glfwSwapBuffers(window->getWindow());
 		glfwPollEvents();
