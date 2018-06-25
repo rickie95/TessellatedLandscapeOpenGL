@@ -3,13 +3,24 @@
 #include <cmath>
 #include <cstdlib>
 #include <vector>
-#include "NoiseThread.h"
+#include "heightMapThread.h"
+#include "stb_image_write.h"
 #include "CustomTypes.h"
 
-typedef struct {
-	//std::vector<float3>* coords;
-	float* coords;
-	std::vector<uint3>* indices;
-} heightMap;
+class HeightMap {
 
-heightMap* createNoiseMap(int numX, int numY,float Hrange,float w, float h, int octaves, int primeIndex, double persistence);
+private:
+	float* coords = NULL;
+	std::vector<uint3>* indices;
+	float max, min;
+	int resolution;
+
+public:
+	HeightMap(int dimension, float Hrange, int octaves, int primeIndex, double persistence);
+	~HeightMap();
+	float* getData();
+	std::vector<uint3>* getIndices();
+	int getResolution();
+	void saveMap(const char* filename);
+
+};

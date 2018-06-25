@@ -125,11 +125,9 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="HeightMapFile.cpp" />
-    <ClCompile Include="heightMapThread.cpp" />
-    <ClCompile Include="NoiseThread.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="HeightMap.cpp" />
+    <ClCompile Include="heightMapThread.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkyBox.cpp" />
@@ -140,11 +138,9 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CustomTypes.h" />
-    <ClInclude Include="HeightMapFile.h" />
-    <ClInclude Include="heightMapThread.h" />
-    <ClInclude Include="NoiseThread.h" />
-    <ClInclude Include="Object.h" />
     <ClInclude Include="HeightMap.h" />
+    <ClInclude Include="heightMapThread.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SkyBox.h" />

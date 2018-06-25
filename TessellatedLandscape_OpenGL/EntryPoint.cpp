@@ -14,8 +14,7 @@
 #include "Shader.h"
 #include "Window.h"
 #include "Camera.h"
-//#include "HeightMap.h"
-#include "HeightMapFile.h"
+#include "HeightMap.h"
 #include "Object.h"
 #include "CustomTypes.h"
 #include "SkyBox.h"
@@ -30,7 +29,7 @@ int main()
 			  WIDTH_SCENE = 200;
 	
 	static Camera* camera = new Camera(glm::vec3(0.0f, 3.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-	Window* window = new Window(800, 600, "A E S T H E T I C  L A N D S C A P E", camera);
+	Window* window = new Window(SCR_WIDTH, SCR_HEIGHT, "A E S T H E T I C  L A N D S C A P E", camera);
 	window->setCamera(camera);
 
 	if (!window->isOk())
@@ -53,19 +52,17 @@ int main()
 	skybox->setShader(skybox_shader);
 
 	// HEIGHT MAP & TERRAIN
-	int h = 2048, ww = 1024; // Resolution
+	int h = 4096, ww = 1024; // Resolution
 	float HeightRange = 60;
 
 	srand(time(NULL));
-	heightMap* hm = NoiseMap(h, HeightRange, 6, rand() % 10, 0.5);
-	createMap(hm->coords, "D:\heightMap.bmp", h);
+	HeightMap* hm = new HeightMap(h, HeightRange, 4, rand() % 10, 0.5);
+	hm->saveMap("D:\heightMap.bmp");
 
+	return 0;
 
-
-	//heightMap* hm = createNoiseMap(h, ww, HeightRange,HEIGHT_SCENE*2, WIDTH_SCENE*2, 7, rand() % 10, 0.50);
-	
-	Object* terrain = new Object((float*)hm->coords, 3*h*ww);
-	//terrain->setIndices(hm->indices);
+	Object* terrain = new Object(hm->getData(), 3*h*ww);
+	terrain->setIndices(hm->getIndices());
 	terrain->setShader(terrain_shader);
 
 	// WATER
