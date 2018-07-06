@@ -14,13 +14,16 @@ private:
 	std::vector<uint3>* indices;
 	float max, min;
 	int resolution;
+	void assembleMap(float* row, int row_index, int resolution,int HeightDensity, int WidthDensity);
 
 public:
 	HeightMap(int dimension, float Hrange, int octaves, int primeIndex, double persistence);
 	~HeightMap();
-	float* getData();
+	float* getData(int HeightDensity, int WidthDensity);
 	std::vector<uint3>* getIndices();
 	int getResolution();
 	void saveMap(const char* filename);
 
 };
+
+void saveMap(const char * filename, float*inputData, int resolution, float max, float min);

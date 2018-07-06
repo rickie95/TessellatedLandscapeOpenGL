@@ -15,6 +15,7 @@ class Shader {
 public:
 	unsigned int ID;
 
+	Shader(const GLchar* vertexPath);
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* geometryPath);
 	Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLchar * geometryPath, const GLchar* evaluationPath, const GLchar* controlPath);
@@ -24,8 +25,12 @@ public:
 	void setData(const std::string &name, float value) const;
 	void setData(const std::string &name, glm::mat4 mat) const;
 	void setData(const std::string &name, glm::vec3 vec) const;
+	void setData(const std::string &name, glm::vec2 vec) const;
+	void setData(const std::string &name, GLuint val) const; 
+	void setFragDataLocation(const char *name, unsigned int val);
 
 private:
+	void linkShaders(int ID);
 	const char* LoadFromFile(const char* filename);
 	unsigned int compileShader(const char* shaderCode, char type);
 };

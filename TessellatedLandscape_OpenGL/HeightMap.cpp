@@ -1,6 +1,16 @@
 #pragma once
 #include "HeightMap.h"
 
+void HeightMap::assembleMap(float* row, int row_index, int resolution, int HeightDensity, int WidthDensity)
+{
+	int i = 0, offset = row_index * resolution * 3;
+	for (int x = 0; x < resolution*3; x += 3) {
+		row[offset + x] = (resolution + x) / WidthDensity;
+		row[offset + x + 1] = this->coords[i++];
+		row[offset + x + 2] = (row_index) / WidthDensity;
+	}
+}
+
 HeightMap::HeightMap(int res, float Hrange, int octaves, int primeIndex, double persistance) {
 
 	this->resolution = res;
@@ -30,9 +40,19 @@ HeightMap::~HeightMap()
 	indices->clear();
 }
 
-float * HeightMap::getData()
+float * HeightMap::getData(int HeightDensity, int WidthDensity)
 {
-	return coords;
+	float* Points = (float*)malloc(sizeof(float)*resolution*resolution * 3);
+	std::vector<std::thread*> tArray(resolution);
+	int pippo = resolution;
+	for (int z = 0; z < resolution; z++)
+		tArray[z] = new std::thread([this,Points, z, pippo, HeightDensity, WidthDensity] 
+						{this->assembleMap(Points, z, resolution, HeightDensity, WidthDensity); });
+
+	for (int z = 0; z < resolution; z++)
+		tArray[z]->join();
+
+	return Points;
 }
 
 std::vector<uint3>* HeightMap::getIndices()
@@ -69,7 +89,30 @@ void HeightMap::saveMap(const char * filename)
 	//  (- min , + max) -> ( 0, max + min) -> ( 0 , 255)
 	float valuex;
 	for (int j = 0; j < resolution*resolution; j++) {
-		valuex = (coords[j] + min) * 255 / max;
+		valuex = (coords[j] + abs(min)) * 255 / (max + abs(min));
+		data[j] = (_int8)valuex;
+	}
+
+	//int stbi_write_bmp(char const *filename, int w, int h, int comp, const void *data);
+	if (stbi_write_bmp(filename, resolution, resolution, 1, data)) {
+		std::cout << "HEIGHT_MAP::Height map completed" << std::endl;
+	}
+	else {
+		std::cout << "HEIGH_MAP::Error occured while saving file" << std::endl;
+	}
+
+	free(data);
+}
+
+void saveMap(const char * filename, float*inputData, int resolution, float max, float min) {
+
+	_int8* data = (_int8*)malloc(sizeof(_int8)*resolution*resolution);
+
+	//map data in 0-255 range
+	//  (- min , + max) -> ( 0, max + min) -> ( 0 , 255)
+	float valuex;
+	for (int j = 0; j < resolution*resolution; j++) {
+		valuex = (inputData[j] + abs(min)) * 255 / (max + abs(min));
 		data[j] = (_int8)valuex;
 	}
 

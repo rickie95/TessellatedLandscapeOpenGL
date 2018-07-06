@@ -112,12 +112,8 @@ void Camera::updateLookAt(){
 	Right = glm::normalize(glm::cross(Front, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	Up = glm::normalize(glm::cross(Right, Front));
 	view = glm::lookAt(position, position + Front, Up);
-	/*
-	direction = glm::normalize(position - target);
-	Right = glm::normalize(glm::cross(up, direction));
-	Up = glm::cross(direction, cameraRight);
 	
-	*/
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
 }
 
 

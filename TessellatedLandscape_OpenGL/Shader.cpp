@@ -1,5 +1,15 @@
 #include "Shader.h"
 
+Shader::Shader(const GLchar* vertexPath) {
+	const char* VertexCode = LoadFromFile(vertexPath);
+	unsigned int vertex = compileShader(VertexCode, 'v');
+	ID = glCreateProgram();
+	std::cout << "SHADER " << ID << " (" << vertexPath << ")" << std::endl;
+	glAttachShader(ID, vertex);
+	linkShaders(ID);
+	glDeleteShader(vertex);
+}
+
 Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath)
 {
 	const char* VertexCode = LoadFromFile(vertexPath);
@@ -7,7 +17,7 @@ Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath)
 
 	unsigned int vertex = compileShader(VertexCode, 'v');
 	unsigned int fragment = compileShader(FragmentCode, 'f');
-		
+
 	int success;
 	char infoLog[512];
 	ID = glCreateProgram();
@@ -38,21 +48,13 @@ Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLc
 	unsigned int fragment = compileShader(FragmentCode, 'f');
 	unsigned int geometry = compileShader(GeometryCode, 'g');
 
-	int success;
-	char infoLog[512];
 	ID = glCreateProgram();
 	std::cout << "SHADER " << ID << " (" << vertexPath << " & " << fragmentPath << ")" << std::endl;
 	glAttachShader(ID, vertex);
 	glAttachShader(ID, fragment);
 	glAttachShader(ID, geometry);
-	glLinkProgram(ID);
-	// print linking errors if any
-	glGetProgramiv(ID, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(ID, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
+
+	linkShaders(ID);
 
 	// delete the shaders as they're linked into our program now and no longer necessery
 	glDeleteShader(vertex);
@@ -68,15 +70,13 @@ Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLc
 	const char* EvaluationCode = LoadFromFile(evaluationPath);
 	const char* ControlCode = LoadFromFile(controlPath);
 
-
 	unsigned int vertex = compileShader(VertexCode, 'v');
 	unsigned int fragment = compileShader(FragmentCode, 'f');
 	unsigned int geometry = compileShader(GeometryCode, 'g');
 	unsigned int evaluation = compileShader(EvaluationCode, 'e');
 	unsigned int control = compileShader(ControlCode, 'c');
 
-	int success;
-	char infoLog[512];
+	
 	ID = glCreateProgram();
 	std::cout << "SHADER " << ID << " (" << vertexPath << " & " << fragmentPath << ")" << std::endl;
 	glAttachShader(ID, vertex);
@@ -84,14 +84,9 @@ Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath, const GLc
 	glAttachShader(ID, geometry);
 	glAttachShader(ID, evaluation);
 	glAttachShader(ID, control);
-	glLinkProgram(ID);
+
 	// print linking errors if any
-	glGetProgramiv(ID, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(ID, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
+	linkShaders(ID);
 
 	// delete the shaders as they're linked into our program now and no longer necessery
 	glDeleteShader(vertex);
@@ -132,6 +127,32 @@ void Shader::setData(const std::string & name, glm::vec3 vec) const{
 	glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &vec[0]);
 }
 
+void Shader::setData(const std::string & name, glm::vec2 vec) const
+{
+	glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &vec[0]);
+}
+
+void Shader::setData(const std::string & name, GLuint val) const
+{
+	glUniform1i(glGetUniformLocation(ID, name.c_str()), val);
+}
+
+void Shader::setFragDataLocation(const char *name, unsigned int val) {
+	glBindFragDataLocation(this->ID, val, name);
+}
+
+
+void Shader::linkShaders(int ID)
+{
+	int success;
+	char infoLog[512];
+	glGetProgramiv(ID, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(ID, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+	}
+}
 
 const char* Shader::LoadFromFile(const char* filename)
 {
@@ -146,10 +167,10 @@ const char* Shader::LoadFromFile(const char* filename)
 	char *buffer = new char[contents.capacity()];
 	strcpy_s(buffer, contents.capacity(), contents.c_str());
 	if (buffer != "") {
-		status = " Shader caricato correttamente (";
+		status = "Shader caricato correttamente (";
 	}
 	else {
-		status = " We've got a situation here (";
+		status = "We've got a situation here (";
 		return NULL;
 	}
 	std::cout << status << filename << ")" << std::endl;

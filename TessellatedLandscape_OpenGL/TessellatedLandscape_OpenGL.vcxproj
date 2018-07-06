@@ -83,6 +83,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -92,6 +93,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <Profile>true</Profile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -124,9 +128,11 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="heightMapThread.cpp" />
+    <ClCompile Include="HeightMapTile.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -138,8 +144,10 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CustomTypes.h" />
+    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="heightMapThread.h" />
+    <ClInclude Include="HeightMapTile.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Shader.h" />
@@ -150,16 +158,22 @@
   <ItemGroup>
     <None Include="..\Shaders\SkyBoxFrag.glsl" />
     <None Include="..\Shaders\SkyBoxVert.glsl" />
+    <None Include="ColorTerrainFrag.frag" />
+    <None Include="ColorTerrainVert.vert" />
     <None Include="fragment.glsl" />
     <None Include="fragment_water.glsl" />
     <None Include="geometry.glsl" />
     <None Include="lightFragment.glsl" />
     <None Include="lightVertex.glsl" />
     <None Include="PerlinVertex.glsl" />
+    <None Include="TerrainGeneratorFragment.frag" />
+    <None Include="TerrainGeneratorVertex.vert" />
     <None Include="tessControlShader.glsl" />
     <None Include="tessEvaluationShader.glsl" />
+    <None Include="TextureFrag.glsl" />
+    <None Include="TextureVert.glsl" />
     <None Include="vertex.glsl" />
-    <None Include="vertex_water.glsl" />
+    <None Include="fragment.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

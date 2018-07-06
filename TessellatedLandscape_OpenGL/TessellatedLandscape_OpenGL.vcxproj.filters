@@ -51,6 +51,12 @@
     <ClCompile Include="HeightMap.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapTile.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -83,6 +89,12 @@
     <ClInclude Include="HeightMap.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapTile.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.glsl">
@@ -103,9 +115,6 @@
     <None Include="PerlinVertex.glsl">
       <Filter>File di risorse</Filter>
     </None>
-    <None Include="vertex_water.glsl">
-      <Filter>File di risorse</Filter>
-    </None>
     <None Include="fragment_water.glsl">
       <Filter>File di risorse</Filter>
     </None>
@@ -119,6 +128,27 @@
       <Filter>File di risorse</Filter>
     </None>
     <None Include="tessControlShader.glsl">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TextureFrag.glsl">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TextureVert.glsl">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="ColorTerrainFrag.frag">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="ColorTerrainVert.vert">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TerrainGeneratorFragment.frag">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TerrainGeneratorVertex.vert">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="fragment.frag">
       <Filter>File di risorse</Filter>
     </None>
   </ItemGroup>
