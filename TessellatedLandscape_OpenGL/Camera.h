@@ -18,6 +18,7 @@ public:
 	glm::mat4 getLookAt();
 	glm::mat4 getProjection();
 	void updateAspectRatio(unsigned int width, unsigned int height);
+	double* getVelocity();
 
 private:
 	float Yaw = -90.0f, Pitch = 0.0f;

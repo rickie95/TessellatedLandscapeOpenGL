@@ -24,6 +24,7 @@ public:
 	void setData(const std::string &name, int value) const;
 	void setData(const std::string &name, float value) const;
 	void setData(const std::string &name, glm::mat4 mat) const;
+	void setData(const std::string &name, glm::vec4 vec) const;
 	void setData(const std::string &name, glm::vec3 vec) const;
 	void setData(const std::string &name, glm::vec2 vec) const;
 	void setData(const std::string &name, GLuint val) const; 

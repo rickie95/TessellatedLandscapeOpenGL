@@ -57,6 +57,9 @@
     <ClCompile Include="HeightMapTile.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="TextArea.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -93,6 +96,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="HeightMapTile.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TextArea.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,6 +155,18 @@
       <Filter>File di risorse</Filter>
     </None>
     <None Include="fragment.frag">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TextArea.vert">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TextArea.frag">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TextShader.vert">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="TextShader.frag">
       <Filter>File di risorse</Filter>
     </None>
   </ItemGroup>

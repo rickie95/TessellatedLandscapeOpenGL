@@ -66,6 +66,7 @@ void Window::setWindow(GLFWwindow* window) {
 		glfwSetFramebufferSizeCallback(this->window, this->framebuffer_size_callback);
 		glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPosCallback(this->window, this->mouse_callback);
+		glfwSetWindowPos(this->window, 20, 50);
 	}
 }
 
@@ -101,11 +102,13 @@ void Window::processInput()
 	}
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
 		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		glfwSetWindowSize(this->window, mode->width - 50, mode->height - 50);
+		glfwSetWindowSize(this->window, mode->width - 50, mode->height - 150);
+		glfwSetWindowPos(this->window, 20, 50);
 	}
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
 		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowSize(this->window, 800, 600);
+		glfwSetWindowPos(this->window, 20, 50);
 	}
 }
 

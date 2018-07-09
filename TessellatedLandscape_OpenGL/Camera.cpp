@@ -101,6 +101,11 @@ void Camera::updateAspectRatio(unsigned int width, unsigned int height)
 	projection = glm::perspective(glm::radians(45.0f), (float)width/height, 0.1f, 100.0f);
 }
 
+double * Camera::getVelocity()
+{
+	return &cameraSpeed;
+}
+
 void Camera::updateLookAt(){
 
 	glm::vec3 front;

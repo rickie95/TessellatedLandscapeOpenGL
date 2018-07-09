@@ -1,7 +1,7 @@
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <gl/GL.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -20,34 +20,22 @@
 #include "CustomTypes.h"
 #include "SkyBox.h"
 #include "HeightMapTile.h"
+#include "TextArea.h"
 
-const int SCR_WIDTH = 800,
-			SCR_HEIGHT = 600,
+const int SCR_WIDTH = 1200,
+			SCR_HEIGHT = 800,
 			MAX_FPS = 60,
 			HEIGHT_SCENE = 200,
 			WIDTH_SCENE = 200;
 
-unsigned int loadTexture(char const* path);
-/*
-void createIndices(std::vector<uint3>* indices, int resolution) {
-	unsigned int i = 0;
-	for (int z = 0; z < resolution; z++) {
-		for (int x = 0; x < resolution; x++) {
-			// Nel frattempo creo gli indici
-			if (x + 1 < resolution && z + 1 < resolution) {
-				uint3 tri = { i, i + resolution, i + resolution + 1 };
-				uint3 tri2 = { i, i + resolution + 1, i + 1 };
-				indices->push_back(tri);
-				indices->push_back(tri2);
-			}
-			i++;
-		}
-	}
-}*/
-
 int main()
 {
 	srand(time(NULL));
+	screen* SCREEN = new screen();
+	SCREEN->WIDTH = 800;
+	SCREEN->HEIGHT = 600;
+	TextArea::setScreen(SCREEN);
+	
 	
 	static Camera* camera = new Camera(glm::vec3(0.0f, 3.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	Window* window = new Window(SCR_WIDTH, SCR_HEIGHT, "A E S T H E T I C  L A N D S C A P E", camera);
@@ -64,9 +52,16 @@ int main()
 		return -1;
 	}
 
+
+	//glewExperimental = GL_TRUE;
+	//glewInit();
+
 	// Creating Shaders
 	Shader* terrain_shader = new Shader("ColorTerrainVert.vert", "ColorTerrainFrag.frag");
 
+	
+	TextArea* text = new TextArea(5.0, 5.0, 250,0);
+	
 	// HEIGHT MAP
 	int resolution = 512; // Resolution
 	glm::vec2 offset = { 0.0, 0.0 };
@@ -194,8 +189,16 @@ int main()
 	int displacement = 5;
 	Shader* tile_shader = new Shader("ColorTerrainVert.vert", "ColorTerrainFrag.frag");
 	glDisable(GL_DEPTH_TEST);
+
+	float pippo = 50.0;
+	int pippo_I = 3;
+	std::string sxs = "S T H E T I C";
+	text->addElement("Camera velocity", camera->getVelocity());
+
 	while (!window->isClosed())
 	{
+		
+
 		window->processInput();
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(10.0));
@@ -266,137 +269,17 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
+		text->draw();
+
 		glfwSwapBuffers(window->getWindow());
 		glfwPollEvents();
 		// LIMIT FPS (da rivedere)
-		std::this_thread::sleep_for(std::chrono::milliseconds(waitFor));
-	}
-
-	return 0;
-
-
-	/*
-	Object* terrain = new Object(hm->getData(20,20), 3*resolution*resolution);
-	terrain->setIndices(hm->getIndices());
-	terrain->setShader(terrain_shader);
-
-	// WATER
-	int i = 0;
-	std::vector<float3>* wat_verts = new std::vector<float3>(4);
-	float3 f = { HEIGHT_SCENE*1.0, 0.0, WIDTH_SCENE*1.0 };
-	(*wat_verts)[i++] = f;
-	f = { HEIGHT_SCENE * -1.0, 0.0, WIDTH_SCENE * 1.0 };
-	(*wat_verts)[i++] = f;
-	f = { HEIGHT_SCENE * 1.0, 0.0, WIDTH_SCENE * -1.0 };
-	(*wat_verts)[i++] = f;
-	f = { HEIGHT_SCENE * -1.0, 0.0, WIDTH_SCENE * -1.0 };
-	(*wat_verts)[i++] = f;
-	
-	i = 0;
-	std::vector<uint3>* wat_ind = new std::vector<uint3>(2);
-	uint3 ind = { 0, 2, 1};
-	(*wat_ind)[i++] = ind;
-	ind = { 1, 2, 3 };
-	(*wat_ind)[i++] = ind;
-
-	Object* water = new Object(wat_verts);
-	water->setShader(water_shader);
-	water->setIndices(wat_ind);
-	
-	int waitFor = (int)(1 / ((float)MAX_FPS)*1000);
-	glm::mat4 model = glm::mat4(1.0f);
-	//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	//model = glm::translate(model, glm::vec3(0.5f, 0.5f, -0.5f));
-
-	// DEPTH TEST + ALPHA BLENDING + CULLING
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-
-	glm::vec3 lightPosition = glm::vec3(5.0f, 15.0f, 5.0f);
-	model = glm::mat4(1.0f);
-	float x = 0;
-	
-	Shader* s = NULL; // Jolly
-	while (!window->isClosed())
-	{
-		window->processInput();
-
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		lightPosition = glm::vec3(5.0f, 5.0f, 5.0f);
-
-		// TERRAIN 
-		s = terrain->useShader();
-		s->setData("model", model);
-		s->setData("projection", camera->getProjection());
-		s->setData("view", camera->getLookAt());
-		s->setData("lightPos", lightPosition);
-		s->setData("gEyeWorldPos", camera->getPosition());
-		s->setData("gDispFactor", 4.5f);
-		terrain->drawObject();
-
-		//WATER
-		s = water->useShader();
-		s->setData("model", model);
-		s->setData("projection", camera->getProjection());
-		s->setData("view", camera->getLookAt());
-		water->drawObject();
 
 		
-		glfwSwapBuffers(window->getWindow());
-		glfwPollEvents();
 
-		// LIMIT FPS (da rivedere)
 		std::this_thread::sleep_for(std::chrono::milliseconds(waitFor));
 	}
 
-	terrain->~Object();
-	water->~Object();
-
-	window->~Window();
-
-	//system("PAUSE");
 	return 0;
-	*/
-}
 
-unsigned int loadTexture(char const * path)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
-		stbi_image_free(data);
-	}
-
-	return textureID;
 }

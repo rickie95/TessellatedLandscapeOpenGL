@@ -13,8 +13,6 @@ void HeightMapTile::createMapCoord(float* input, int resolution) {
 		for (int x = 0; x < resolution * 2; x += 2) {
 			input[z*resolution * 2 + x] = (float)(i++ / (WidthDensity/2) - 1);
 			input[z*resolution * 2 + x + 1] = (float)(z / (WidthDensity / 2) - 1);
-			if (z == resolution - 1 )
-				std::cout << input[z*resolution * 2 + x] << " " << input[z*resolution * 2 + x + 1] << std::endl;
 		}
 		i = 0;
 	}
